@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Library - Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <h1>Simple Library Dashboard</h1>
+            <div class="user-info">
+                <span id="welcomeUser"></span>
+                <button id="logoutBtn">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="dashboard">
+        <section class="controls">
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Search books by title, author, or ISBN...">
+                <button id="searchBtn">Search</button>
+                <button id="clearSearchBtn">Clear</button>
+            </div>
+            <button id="addBookBtn" class="primary-btn">Add New Book</button>
+        </section>
+
+        <section class="books-section">
+            <h2>My Books</h2>
+            <div class="table-container">
+                <table id="booksTable" class="books-table">
+                    <thead>
+                        <tr>
+                            <th>Cover</th>
+                            <th>Title</th>
+                            <th>Author</th>
+                            <th>ISBN</th>
+                            <th>Genre</th>
+                            <th>Year</th>
+                            <th>Description</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="booksContainer">
+                        <!-- Books will be displayed here -->
+                    </tbody>
+                </table>
+                <div id="noBooksMessage" class="no-books" style="display: none;">
+                    No books found. Add your first book!
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Add/Edit Book Modal -->
+    <div id="bookModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalTitle">Add New Book</h2>
+            <form id="bookForm">
+                <div class="form-group">
+                    <label for="bookTitle">Title:</label>
+                    <input type="text" id="bookTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="bookAuthor">Author:</label>
+                    <input type="text" id="bookAuthor" required>
+                </div>
+                <div class="form-group">
+                    <label for="bookISBN">ISBN:</label>
+                    <input type="text" id="bookISBN" required>
+                </div>
+                <div class="form-group">
+                    <label for="bookGenre">Genre:</label>
+                    <input type="text" id="bookGenre">
+                </div>
+                <div class="form-group">
+                    <label for="bookYear">Publication Year:</label>
+                    <input type="number" id="bookYear" min="1000" max="2025">
+                </div>
+                <div class="form-group">
+                    <label for="bookDescription">Description:</label>
+                    <textarea id="bookDescription" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="bookCover">Book Cover Image:</label>
+                    <input type="file" id="bookCover" accept="image/*">
+                    <div id="currentCover"></div>
+                </div>
+                <div class="modal-buttons">
+                    <button type="submit" id="saveBookBtn">Save Book</button>
+                    <button type="button" id="cancelBtn">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <h2>Confirm Delete</h2>
+            <p>Are you sure you want to delete this book?</p>
+            <div class="modal-buttons">
+                <button id="confirmDeleteBtn" class="danger-btn">Delete</button>
+                <button id="cancelDeleteBtn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="library.js"></script>
+</body>
+</html>

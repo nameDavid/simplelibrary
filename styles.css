@@ -1,0 +1,437 @@
+/* Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background: #f5f5f5;
+    min-height: 100vh;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* Form Styles */
+.form-container {
+    background: white;
+    padding: 40px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+}
+
+.form-container h1 {
+    text-align: center;
+    color: #667eea;
+    margin-bottom: 10px;
+    font-size: 2.5em;
+}
+
+.form-container h2 {
+    text-align: center;
+    color: #555;
+    margin-bottom: 30px;
+    font-size: 1.8em;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    background: #667eea;
+    color: white;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-bottom: 10px;
+}
+
+button:hover {
+    background: #5a6fd8;
+}
+
+.primary-btn {
+    background: #28a745;
+}
+
+.primary-btn:hover {
+    background: #218838;
+}
+
+.danger-btn {
+    background: #dc3545;
+}
+
+.danger-btn:hover {
+    background: #c82333;
+}
+
+.form-container p {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.form-container a {
+    color: #667eea;
+    text-decoration: none;
+}
+
+.form-container a:hover {
+    text-decoration: underline;
+}
+
+.error-message {
+    color: #dc3545;
+    font-size: 14px;
+    margin-top: 10px;
+    text-align: center;
+}
+
+.success-message {
+    color: #28a745;
+    font-size: 14px;
+    margin-top: 10px;
+    text-align: center;
+}
+
+/* Dashboard Styles */
+header {
+    background: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.header-container h1 {
+    color: #667eea;
+    font-size: 1.8em;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-info span {
+    font-weight: bold;
+    color: #555;
+}
+
+.user-info button {
+    width: auto;
+    padding: 8px 16px;
+    margin: 0;
+    background: #dc3545;
+}
+
+.dashboard {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.search-container {
+    display: flex;
+    gap: 10px;
+    flex: 1;
+    max-width: 500px;
+}
+
+.search-container input {
+    flex: 1;
+    padding: 10px;
+    border: 2px solid #ddd;
+    font-size: 16px;
+}
+
+.search-container button {
+    width: auto;
+    padding: 10px 20px;
+    margin: 0;
+}
+
+.books-section h2 {
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 1.5em;
+}
+
+.table-container {
+    background: white;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.books-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.books-table th {
+    background: #667eea;
+    color: white;
+    padding: 15px 10px;
+    text-align: left;
+    font-weight: bold;
+    border-bottom: 2px solid #5a6fd8;
+}
+
+.books-table td {
+    padding: 12px 10px;
+    border-bottom: 1px solid #eee;
+    vertical-align: middle;
+}
+
+.books-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.books-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.book-cover-cell {
+    width: 80px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8f9fa;
+    overflow: hidden;
+}
+
+.book-cover-cell img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.book-cover-cell.no-cover {
+    font-size: 12px;
+    color: #666;
+    text-align: center;
+}
+
+.book-actions {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+.book-actions button {
+    width: auto;
+    padding: 6px 12px;
+    margin: 0;
+    font-size: 12px;
+}
+
+.edit-btn {
+    background: #ffc107;
+    color: #333;
+}
+
+.edit-btn:hover {
+    background: #e0a800;
+}
+
+.delete-btn {
+    background: #dc3545;
+}
+
+.delete-btn:hover {
+    background: #c82333;
+}
+
+.description-cell {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.no-books {
+    text-align: center;
+    color: #666;
+    font-size: 1.2em;
+    margin: 50px 0;
+    padding: 40px;
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 5% auto;
+    padding: 30px;
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.close {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: #333;
+}
+
+.modal h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.modal-buttons button {
+    flex: 1;
+    width: auto;
+    margin: 0;
+}
+
+#currentCover {
+    margin-top: 10px;
+}
+
+#currentCover img {
+    max-width: 100px;
+    max-height: 100px;
+    object-fit: cover;
+}
+
+.no-books {
+    text-align: center;
+    color: #666;
+    font-size: 1.2em;
+    margin: 50px 0;
+    padding: 40px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-container {
+        max-width: none;
+    }
+
+    .books-table {
+        font-size: 12px;
+    }
+    
+    .books-table th,
+    .books-table td {
+        padding: 8px 5px;
+    }
+    
+    .book-cover-cell {
+        width: 60px;
+        height: 45px;
+    }
+    
+    .description-cell {
+        max-width: 120px;
+    }
+    
+    .book-actions {
+        flex-direction: column;
+        gap: 3px;
+    }
+    
+    .book-actions button {
+        font-size: 11px;
+        padding: 4px 8px;
+    }
+
+    .header-container {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+
+    .user-info {
+        justify-content: center;
+    }
+}
