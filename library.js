@@ -5,21 +5,19 @@ let editingBookId = null;
 let deleteBookId = null;
 
 // Check authentication and initialize
-document.addEventListener('DOMContentLoaded', function() {
+$(function() {
     const storedUser = localStorage.getItem('currentUser');
-    
     if (!storedUser) {
         window.location.href = 'index.html';
         return;
     }
-    
     currentUser = JSON.parse(storedUser);
     initializeDashboard();
 });
 
 function initializeDashboard() {
     // Display welcome message
-    document.getElementById('welcomeUser').textContent = `Welcome, ${currentUser.name}!`;
+    $('#welcomeUser').text(`Welcome, ${currentUser.name}!`);
     
     // Set up event listeners
     setupEventListeners();
@@ -30,40 +28,39 @@ function initializeDashboard() {
 
 function setupEventListeners() {
     // Logout button
-    document.getElementById('logoutBtn').addEventListener('click', logout);
+    $('#logoutBtn').on('click', logout);
     
     // Add book button
-    document.getElementById('addBookBtn').addEventListener('click', openAddBookModal);
+    $('#addBookBtn').on('click', openAddBookModal);
     
     // Search functionality
-    document.getElementById('searchBtn').addEventListener('click', searchBooks);
-    document.getElementById('clearSearchBtn').addEventListener('click', clearSearch);
-    document.getElementById('searchInput').addEventListener('keypress', function(e) {
+    $('#searchBtn').on('click', searchBooks);
+    $('#clearSearchBtn').on('click', clearSearch);
+    $('#searchInput').on('keypress', function(e) {
         if (e.key === 'Enter') {
             searchBooks();
         }
     });
     
     // Modal event listeners
-    document.querySelector('.close').addEventListener('click', closeBookModal);
-    document.getElementById('cancelBtn').addEventListener('click', closeBookModal);
-    document.getElementById('bookForm').addEventListener('submit', saveBook);
+    $('.close').on('click', closeBookModal);
+    $('#cancelBtn').on('click', closeBookModal);
+    $('#bookForm').on('submit', saveBook);
     
     // Delete modal event listeners
-    document.getElementById('confirmDeleteBtn').addEventListener('click', confirmDelete);
-    document.getElementById('cancelDeleteBtn').addEventListener('click', closeDeleteModal);
+    $('#confirmDeleteBtn').on('click', confirmDelete);
+    $('#cancelDeleteBtn').on('click', closeDeleteModal);
     
     // File input change handler
-    document.getElementById('bookCover').addEventListener('change', handleFileSelect);
+    $('#bookCover').on('change', handleFileSelect);
     
     // Close modal when clicking outside
-    window.addEventListener('click', function(e) {
-        const bookModal = document.getElementById('bookModal');
-        const deleteModal = document.getElementById('deleteModal');
-        if (e.target === bookModal) {
+    $(window).on('click', function(e) {
+        const $target = $(e.target);
+        if ($target.is('#bookModal')) {
             closeBookModal();
         }
-        if (e.target === deleteModal) {
+        if ($target.is('#deleteModal')) {
             closeDeleteModal();
         }
     });
@@ -88,20 +85,18 @@ function saveBooks(books) {
 
 function loadBooks(booksToShow = null) {
     const books = booksToShow || getUserBooks();
-    const container = document.getElementById('booksContainer');
-    const noBooksMessage = document.getElementById('noBooksMessage');
-    const booksTable = document.getElementById('booksTable');
-    
+    const $container = $('#booksContainer');
+    const $noBooksMessage = $('#noBooksMessage');
+    const $booksTable = $('#booksTable');
     if (books.length === 0) {
-        container.innerHTML = '';
-        noBooksMessage.style.display = 'block';
-        booksTable.style.display = 'none';
+        $container.html('');
+        $noBooksMessage.show();
+        $booksTable.css('display', 'none');
         return;
     }
-    
-    noBooksMessage.style.display = 'none';
-    booksTable.style.display = 'table';
-    container.innerHTML = books.map(book => createBookRow(book)).join('');
+    $noBooksMessage.hide();
+    $booksTable.css('display', 'table');
+    $container.html(books.map(book => createBookRow(book)).join(''));
 }
 
 function createBookRow(book) {
@@ -145,9 +140,9 @@ function escapeHtml(text) {
 function openAddBookModal() {
     editingBookId = null;
     document.getElementById('modalTitle').textContent = 'Add New Book';
-    document.getElementById('bookForm').reset();
-    document.getElementById('currentCover').innerHTML = '';
-    document.getElementById('bookModal').style.display = 'block';
+    $('#bookForm')[0].reset();
+    $('#currentCover').html('');
+    $('#bookModal').show();
 }
 
 function editBook(bookId) {
@@ -157,29 +152,28 @@ function editBook(bookId) {
     if (!book) return;
     
     editingBookId = bookId;
-    document.getElementById('modalTitle').textContent = 'Edit Book';
+    $('#modalTitle').text('Edit Book');
     
     // Populate form
-    document.getElementById('bookTitle').value = book.title;
-    document.getElementById('bookAuthor').value = book.author;
-    document.getElementById('bookISBN').value = book.isbn;
-    document.getElementById('bookGenre').value = book.genre || '';
-    document.getElementById('bookYear').value = book.year || '';
-    document.getElementById('bookDescription').value = book.description || '';
+    $('#bookTitle').val(book.title);
+    $('#bookAuthor').val(book.author);
+    $('#bookISBN').val(book.isbn);
+    $('#bookGenre').val(book.genre || '');
+    $('#bookYear').val(book.year || '');
+    $('#bookDescription').val(book.description || '');
     
     // Show current cover if exists
-    const currentCoverDiv = document.getElementById('currentCover');
+    const $currentCoverDiv = $('#currentCover');
     if (book.cover) {
-        currentCoverDiv.innerHTML = `<p>Current cover:</p><img src="${book.cover}" alt="Current cover">`;
+        $currentCoverDiv.html(`<p>Current cover:</p><img src="${book.cover}" alt="Current cover">`);
     } else {
-        currentCoverDiv.innerHTML = '<p>No current cover image</p>';
+        $currentCoverDiv.html('<p>No current cover image</p>');
     }
-    
-    document.getElementById('bookModal').style.display = 'block';
+    $('#bookModal').show();
 }
 
 function closeBookModal() {
-    document.getElementById('bookModal').style.display = 'none';
+    $('#bookModal').hide();
     editingBookId = null;
 }
 
@@ -188,8 +182,7 @@ function handleFileSelect(event) {
     if (file) {
         const reader = new FileReader();
         reader.onload = function(e) {
-            const currentCoverDiv = document.getElementById('currentCover');
-            currentCoverDiv.innerHTML = `<p>Preview:</p><img src="${e.target.result}" alt="Preview">`;
+            $('#currentCover').html(`<p>Preview:</p><img src="${e.target.result}" alt="Preview">`);
         };
         reader.readAsDataURL(file);
     }
@@ -198,13 +191,13 @@ function handleFileSelect(event) {
 function saveBook(event) {
     event.preventDefault();
     
-    const title = document.getElementById('bookTitle').value.trim();
-    const author = document.getElementById('bookAuthor').value.trim();
-    const isbn = document.getElementById('bookISBN').value.trim();
-    const genre = document.getElementById('bookGenre').value.trim();
-    const year = document.getElementById('bookYear').value;
-    const description = document.getElementById('bookDescription').value.trim();
-    const coverFile = document.getElementById('bookCover').files[0];
+    const title = $('#bookTitle').val().trim();
+    const author = $('#bookAuthor').val().trim();
+    const isbn = $('#bookISBN').val().trim();
+    const genre = $('#bookGenre').val().trim();
+    const year = $('#bookYear').val();
+    const description = $('#bookDescription').val().trim();
+    const coverFile = $('#bookCover')[0].files[0];
     
     const books = getUserBooks();
     
@@ -249,7 +242,7 @@ function saveBook(event) {
         
         saveBooks(books);
         loadBooks();
-        closeBookModal();
+    closeBookModal();
         
         const action = editingBookId ? 'updated' : 'added';
         alert(`Book ${action} successfully!`);
@@ -269,11 +262,11 @@ function saveBook(event) {
 
 function openDeleteModal(bookId) {
     deleteBookId = bookId;
-    document.getElementById('deleteModal').style.display = 'block';
+    $('#deleteModal').show();
 }
 
 function closeDeleteModal() {
-    document.getElementById('deleteModal').style.display = 'none';
+    $('#deleteModal').hide();
     deleteBookId = null;
 }
 
@@ -311,6 +304,6 @@ function searchBooks() {
 }
 
 function clearSearch() {
-    document.getElementById('searchInput').value = '';
+    $('#searchInput').val('');
     loadBooks();
 }
