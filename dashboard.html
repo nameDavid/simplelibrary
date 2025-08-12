@@ -60,34 +60,61 @@
             <span class="close">&times;</span>
             <h2 id="modalTitle">Add New Book</h2>
             <form id="bookForm">
-                <div class="form-group">
-                    <label for="bookTitle">Title:</label>
-                    <input type="text" id="bookTitle" required>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="bookTitle">Title:</label>
+                        <input type="text" id="bookTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="bookAuthor">Author:</label>
+                        <input type="text" id="bookAuthor" required>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="bookAuthor">Author:</label>
-                    <input type="text" id="bookAuthor" required>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="bookISBN">ISBN:</label>
+                        <input type="text" id="bookISBN" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="bookGenre">Genre:</label>
+                        <input type="text" id="bookGenre">
+                    </div>
+                    <div class="form-group">
+                        <label for="bookYear">Publication Year:</label>
+                        <input type="number" id="bookYear" min="1000" max="2025">
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="bookISBN">ISBN:</label>
-                    <input type="text" id="bookISBN" required>
-                </div>
-                <div class="form-group">
-                    <label for="bookGenre">Genre:</label>
-                    <input type="text" id="bookGenre">
-                </div>
-                <div class="form-group">
-                    <label for="bookYear">Publication Year:</label>
-                    <input type="number" id="bookYear" min="1000" max="2025">
-                </div>
-                <div class="form-group">
+                <div class="form-group full-width">
                     <label for="bookDescription">Description:</label>
-                    <textarea id="bookDescription" rows="3"></textarea>
+                    <textarea id="bookDescription" rows="4"></textarea>
                 </div>
                 <div class="form-group">
                     <label for="bookCover">Book Cover Image:</label>
                     <input type="file" id="bookCover" accept="image/*">
                     <div id="currentCover"></div>
+                </div>
+                <div class="form-group full-width">
+                    <label for="textExtraction">Text Extraction & Notes:</label>
+                    <div class="text-extraction-section">
+                        <div class="extraction-header">
+                            <div class="extraction-title">
+                                <h3>Book Content & Notes</h3>
+                                <p>Add quotes, summaries, notes, or import text from your book for easy searching</p>
+                            </div>
+                            <div class="extraction-controls">
+                                <button type="button" id="addTextBtn" class="extraction-btn primary">
+                                    <span class="btn-icon">➕</span> Add Extract
+                                </button>
+                                <button type="button" id="importTextBtn" class="extraction-btn secondary">
+                                    <span class="btn-icon">📁</span> Import File
+                                </button>
+                                <input type="file" id="textFile" accept=".txt,.pdf,.doc,.docx" style="display: none;">
+                            </div>
+                        </div>
+                        <div id="textExtracts" class="text-extracts-container">
+                            <!-- Text extracts will be displayed here -->
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-buttons">
                     <button type="submit" id="saveBookBtn">Save Book</button>

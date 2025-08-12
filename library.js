@@ -54,6 +54,13 @@ function setupEventListeners() {
     // File input change handler
     $('#bookCover').on('change', handleFileSelect);
     
+    // Text extraction handlers
+    $('#addTextBtn').on('click', addTextExtract);
+    $('#importTextBtn').on('click', function() {
+        $('#textFile').click();
+    });
+    $('#textFile').on('change', handleTextFileImport);
+    
     // Close modal when clicking outside
     $(window).on('click', function(e) {
         const $target = $(e.target);
@@ -88,12 +95,14 @@ function loadBooks(booksToShow = null) {
     const $container = $('#booksContainer');
     const $noBooksMessage = $('#noBooksMessage');
     const $booksTable = $('#booksTable');
+    
     if (books.length === 0) {
         $container.html('');
         $noBooksMessage.show();
         $booksTable.css('display', 'none');
         return;
     }
+    
     $noBooksMessage.hide();
     $booksTable.css('display', 'table');
     $container.html(books.map(book => createBookRow(book)).join(''));
@@ -139,9 +148,10 @@ function escapeHtml(text) {
 
 function openAddBookModal() {
     editingBookId = null;
-    document.getElementById('modalTitle').textContent = 'Add New Book';
+    $('#modalTitle').text('Add New Book');
     $('#bookForm')[0].reset();
     $('#currentCover').html('');
+    $('#textExtracts').html('<div class="no-extracts">No text extracts added yet. Click "Add Text Extract" to begin.</div>');
     $('#bookModal').show();
 }
 
@@ -169,6 +179,10 @@ function editBook(bookId) {
     } else {
         $currentCoverDiv.html('<p>No current cover image</p>');
     }
+    
+    // Display text extracts
+    displayTextExtracts(book.textExtracts || []);
+    
     $('#bookModal').show();
 }
 
@@ -198,6 +212,7 @@ function saveBook(event) {
     const year = $('#bookYear').val();
     const description = $('#bookDescription').val().trim();
     const coverFile = $('#bookCover')[0].files[0];
+    const textExtracts = collectTextExtracts();
     
     const books = getUserBooks();
     
@@ -215,6 +230,7 @@ function saveBook(event) {
         genre,
         year: year ? parseInt(year) : null,
         description,
+        textExtracts,
         userId: currentUser.id
     };
     
@@ -242,7 +258,7 @@ function saveBook(event) {
         
         saveBooks(books);
         loadBooks();
-    closeBookModal();
+        closeBookModal();
         
         const action = editingBookId ? 'updated' : 'added';
         alert(`Book ${action} successfully!`);
@@ -284,7 +300,7 @@ function confirmDelete() {
 }
 
 function searchBooks() {
-    const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+    const searchTerm = $('#searchInput').val().toLowerCase().trim();
     
     if (!searchTerm) {
         loadBooks();
@@ -292,13 +308,21 @@ function searchBooks() {
     }
     
     const books = getUserBooks();
-    const filteredBooks = books.filter(book => 
-        book.title.toLowerCase().includes(searchTerm) ||
-        book.author.toLowerCase().includes(searchTerm) ||
-        book.isbn.toLowerCase().includes(searchTerm) ||
-        (book.genre && book.genre.toLowerCase().includes(searchTerm)) ||
-        (book.description && book.description.toLowerCase().includes(searchTerm))
-    );
+    const filteredBooks = books.filter(book => {
+        // Search in basic book fields
+        const basicSearch = book.title.toLowerCase().includes(searchTerm) ||
+            book.author.toLowerCase().includes(searchTerm) ||
+            book.isbn.toLowerCase().includes(searchTerm) ||
+            (book.genre && book.genre.toLowerCase().includes(searchTerm)) ||
+            (book.description && book.description.toLowerCase().includes(searchTerm));
+        
+        // Search in text extracts
+        const extractSearch = book.textExtracts && book.textExtracts.some(extract => 
+            extract.text.toLowerCase().includes(searchTerm)
+        );
+        
+        return basicSearch || extractSearch;
+    });
     
     loadBooks(filteredBooks);
 }
@@ -306,4 +330,121 @@ function searchBooks() {
 function clearSearch() {
     $('#searchInput').val('');
     loadBooks();
+}
+
+// Text Extraction Functions
+function addTextExtract() {
+    const extractId = Date.now();
+    const extractHtml = `
+        <div class="text-extract-item" data-extract-id="${extractId}">
+            <div class="extract-header">
+                <div class="extract-meta">
+                    <label>Page: <input type="number" class="extract-page" placeholder="1" min="1"></label>
+                    <label>Paragraph: <input type="number" class="extract-paragraph" placeholder="1" min="1"></label>
+                    <label>Type: 
+                        <select class="extract-type">
+                            <option value="quote">Quote</option>
+                            <option value="summary">Summary</option>
+                            <option value="note">Note</option>
+                            <option value="chapter">Chapter</option>
+                        </select>
+                    </label>
+                </div>
+                <button type="button" class="remove-extract-btn" onclick="removeTextExtract('${extractId}')">Remove</button>
+            </div>
+            <textarea class="extract-text" placeholder="Enter or paste text extract here..."></textarea>
+            <div class="extract-search-info">This text will be searchable when you search for books</div>
+        </div>
+    `;
+    
+    const $container = $('#textExtracts');
+    if ($container.find('.no-extracts').length) {
+        $container.html('');
+    }
+    $container.append(extractHtml);
+}
+
+function removeTextExtract(extractId) {
+    $(`[data-extract-id="${extractId}"]`).remove();
+    
+    const $container = $('#textExtracts');
+    if ($container.children().length === 0) {
+        $container.html('<div class="no-extracts">No text extracts added yet. Click "Add Text Extract" to begin.</div>');
+    }
+}
+
+function handleTextFileImport(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const text = e.target.result;
+        
+        // Create a new extract with the imported text
+        addTextExtract();
+        
+        // Get the last added extract and populate it
+        const $lastExtract = $('#textExtracts .text-extract-item').last();
+        $lastExtract.find('.extract-text').val(text);
+        $lastExtract.find('.extract-type').val('chapter');
+        
+        // Clear the file input
+        $('#textFile').val('');
+    };
+    reader.readAsText(file);
+}
+
+function collectTextExtracts() {
+    const extracts = [];
+    $('#textExtracts .text-extract-item').each(function() {
+        const $item = $(this);
+        const text = $item.find('.extract-text').val().trim();
+        
+        if (text) {
+            extracts.push({
+                page: parseInt($item.find('.extract-page').val()) || null,
+                paragraph: parseInt($item.find('.extract-paragraph').val()) || null,
+                type: $item.find('.extract-type').val(),
+                text: text
+            });
+        }
+    });
+    return extracts;
+}
+
+function displayTextExtracts(extracts) {
+    const $container = $('#textExtracts');
+    
+    if (!extracts || extracts.length === 0) {
+        $container.html('<div class="no-extracts">No text extracts added yet. Click "Add Text Extract" to begin.</div>');
+        return;
+    }
+    
+    $container.html('');
+    extracts.forEach((extract, index) => {
+        const extractId = Date.now() + index;
+        const extractHtml = `
+            <div class="text-extract-item" data-extract-id="${extractId}">
+                <div class="extract-header">
+                    <div class="extract-meta">
+                        <label>Page: <input type="number" class="extract-page" value="${extract.page || ''}" placeholder="1" min="1"></label>
+                        <label>Paragraph: <input type="number" class="extract-paragraph" value="${extract.paragraph || ''}" placeholder="1" min="1"></label>
+                        <label>Type: 
+                            <select class="extract-type">
+                                <option value="quote" ${extract.type === 'quote' ? 'selected' : ''}>Quote</option>
+                                <option value="summary" ${extract.type === 'summary' ? 'selected' : ''}>Summary</option>
+                                <option value="note" ${extract.type === 'note' ? 'selected' : ''}>Note</option>
+                                <option value="chapter" ${extract.type === 'chapter' ? 'selected' : ''}>Chapter</option>
+                            </select>
+                        </label>
+                    </div>
+                    <button type="button" class="remove-extract-btn" onclick="removeTextExtract('${extractId}')">Remove</button>
+                </div>
+                <textarea class="extract-text" placeholder="Enter or paste text extract here...">${escapeHtml(extract.text)}</textarea>
+                <div class="extract-search-info">This text will be searchable when you search for books</div>
+            </div>
+        `;
+        $container.append(extractHtml);
+    });
 }
